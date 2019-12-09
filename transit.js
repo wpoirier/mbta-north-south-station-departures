@@ -14,13 +14,13 @@ $(document).ready(function(){
 
 	getNorthAndSouthStationSchedules();
 
-	getAlerts();
+	//getAlerts();
 
 	//getNorthAndSouthStationStops();
 
 	setInterval(function(){  
 		getNorthAndSouthStationSchedules();
-		//getAlerts();
+		getAlerts();
 		updateVehicles();
 	}, 10000);
 
@@ -107,7 +107,6 @@ function fillTable(){
 			<th>Train #</th>
 			<th>Track #</th>
 			<th>Current Stop</th>
-			<th>Status</th>
 		</tr>
 	`;
 	
@@ -130,7 +129,7 @@ function fillTable(){
 			departureTime = transitData.northSchedule[northIndex].attributes.departure_time;
 		}
 
-		console.log("departure time", departureTime);
+		//console.log("departure time", departureTime);
 
 		if (arrivalTime && arrivalTime !=null) {
 			arrivalTime = new Date(arrivalTime).toLocaleTimeString('en-US');
@@ -152,7 +151,7 @@ function fillTable(){
 		let currentStop = transitData.vehicles[i].relationships.stop.data.id;
 		let rawStopStatus = transitData.vehicles[i].attributes.current_status
 		let stopStatus =  englishifyStopStatus(rawStopStatus) + " " + currentStop;
-		let alertStatus = "";
+		//let alertStatus = "";
 
 		//get track;
 		let track = "TBD";
@@ -173,7 +172,6 @@ function fillTable(){
 				<td>${train}</td>	//train#
 				<td>${track}</td>	//track#
 				<td>${stopStatus}</td>	//stop status
-				<td>${alertStatus}</td> //alert status
 			</tr>
 		`;
 	}
