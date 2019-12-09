@@ -1,0 +1,18 @@
+body {
+	color: gray;
+}
+
+#railData {
+
+}
+
+th {
+	margin-right: 30px;
+
+}
+
+td {
+	border-style: solid;
+	border-left : 1px;
+	border-right: 1px;
+}
