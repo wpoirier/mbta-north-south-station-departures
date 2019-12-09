@@ -14,10 +14,13 @@ $(document).ready(function(){
 
 	getNorthAndSouthStationSchedules();
 
+	//getAlerts();
+
 	//getNorthAndSouthStationStops();
 
 	setInterval(function(){  
 		getNorthAndSouthStationSchedules();
+		//getAlerts();
 		updateVehicles();
 	}, 10000);
 
@@ -40,35 +43,37 @@ function updateVehicles(){
 	});
 }
 
-function getNorthAndSouthStationStops(){
-	const stopsUrl = "https://api-v3.mbta.com/stops";
-	getData("stops", stopsUrl, ()=>{
-		let southStationStops = $.grep(transitData.stops, (n,i)=>{ return n.id.includes("South Station") });
-		let northStationStops = $.grep(transitData.stops, (n,i)=>{ return n.id.includes("North Station") });
-		transitData.stops = {
-			"southStation": southStationStops, 
-			"northStation": northStationStops
-		};
+// function getNorthAndSouthStationStops(){
+// 	const stopsUrl = "https://api-v3.mbta.com/stops";
+// 	getData("stops", stopsUrl, ()=>{
+// 		let southStationStops = $.grep(transitData.stops, (n,i)=>{ return n.id.includes("South Station") });
+// 		let northStationStops = $.grep(transitData.stops, (n,i)=>{ return n.id.includes("North Station") });
+// 		transitData.stops = {
+// 			"southStation": southStationStops, 
+// 			"northStation": northStationStops
+// 		};
 		
-		updateVehicles(); //call initial updateVehicles call once we get the stops
-	});
-}
+// 		updateVehicles(); //call initial updateVehicles call once we get the stops
+// 	});
+// }
 
 function getNorthAndSouthStationSchedules() {
 	const southUrl = "https://api-v3.mbta.com/schedules?filter%5Bstop%5D=South%20Station";
 	getData("southSchedule", southUrl, ()=>{
 		const northUrl = "https://api-v3.mbta.com/schedules?filter%5Bstop%5D=North%20Station";
 		getData("northSchedule", northUrl, ()=>{
-			getAlerts();
 			//console.log(transitData.northSchedule);
 			//console.log(transitData.southSchedule);
+			updateVehicles(); //get the vehicles now that we have the schedules
 		});
 	});
 }
 
 function getAlerts(){
 	const alertsUrl = "https://api-v3.mbta.com/alerts";
-	getData("alerts", alertsUrl)
+	getData("alerts", alertsUrl, ()=>{
+		//todo?
+	})
 };
 
 //TODO: put API key in env var
@@ -184,7 +189,7 @@ function englishifyStopStatus(status){
 
 function lookupDestination(key) {
 	let map = {
-		"CR-Fitchberg" : "Wachusett",
+		"CR-Fitchburg" : "Wachusett",
 		"CR-Worcester" : "Worcester",
 		"CR-Middleborough":"Middleborough/Lakeville",
 		"CR-Newburyport":"Rockport",
