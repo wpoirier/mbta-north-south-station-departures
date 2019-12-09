@@ -2,17 +2,9 @@ body {
 	color: gray;
 }
 
-#railData {
-
-}
-
 #tableContainer {
 	text-align:center;
-	margin-left: 10vw;
-}
-
-th {
-	margin-right: 30px;
+	margin-bottom: 2rem;
 }
 
 td {

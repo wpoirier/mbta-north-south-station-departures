@@ -14,7 +14,7 @@ $(document).ready(function(){
 
 	getNorthAndSouthStationSchedules();
 
-	//getAlerts();
+	getAlerts();
 
 	//getNorthAndSouthStationStops();
 
@@ -31,8 +31,9 @@ $(document).ready(function(){
 });
 
 function updateDate(){
-	let date = new Date().toLocaleTimeString();
-	$("#currentDate").html(date);
+	let date = new Date();
+	$("#currentDate").html(date.toLocaleDateString());
+	$("#currentTime").html(date.toLocaleTimeString());
 };
 
 function updateVehicles(){
@@ -198,7 +199,9 @@ function lookupDestination(key) {
 		"CR-Lowell":"Lowell",
 		"CR-Kingston":"Plymouth",
 		"CR-Greenbush":"Greenbush",
-		"CR-Fairmount":"Readville"
+		"CR-Fairmount":"Readville",
+		"CR-Needham":"Needham Heights",
+		"CR-Franklin":"Forge Park"
 	};
 	return map[key];
 }
