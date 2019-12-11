@@ -14,9 +14,7 @@ $(document).ready(function(){
 
 	getNorthAndSouthStationSchedules();
 
-	//getAlerts();
-
-	//getNorthAndSouthStationStops();
+	getAlerts();
 
 	setInterval(function(){  
 		getNorthAndSouthStationSchedules();
@@ -39,7 +37,7 @@ function updateDate(){
 function updateVehicles(){
 	const vehiclesUrl = "https://api-v3.mbta.com/vehicles";
 	getData("vehicles", vehiclesUrl, ()=>{
-		transitData.vehicles = $.grep(transitData.vehicles, (n,i)=>{ return n.relationships.route.data.id.includes("CR") });
+		transitData.vehicles = getCommuterRailVehicles();
 		fillTable();
 	});
 }
@@ -107,6 +105,7 @@ function fillTable(){
 			<th>Train #</th>
 			<th>Track #</th>
 			<th>Current Stop</th>
+			<th>Status</th>
 		</tr>
 	`;
 	
@@ -152,14 +151,16 @@ function fillTable(){
 		let rawStopStatus = transitData.vehicles[i].attributes.current_status
 		let stopStatus =  englishifyStopStatus(rawStopStatus) + " " + currentStop;
 		//let alertStatus = "";
+		let boardingStatus = checkDelays(tripId);
 
-		//get track;
+		//get track and boardingStatus;
 		let track = "TBD";
 		if (currentStop.includes("South Station") || currentStop.includes("North Station")) {
 			//console.log("currentStop", currentStop)
 			let parts = currentStop.split("-");
 			track = parts[1] ? parts[1] : "";
 			//console.log("parts", parts);
+			boardingStatus = getBoardingStatus(rawStopStatus);
 		}
 
 		tableHtml += `
@@ -172,6 +173,7 @@ function fillTable(){
 				<td>${train}</td>	//train#
 				<td>${track}</td>	//track#
 				<td>${stopStatus}</td>	//stop status
+				<td>${boardingStatus}</td> //boarding status
 			</tr>
 		`;
 	}
@@ -202,4 +204,24 @@ function lookupDestination(key) {
 		"CR-Franklin":"Forge Park"
 	};
 	return map[key];
+}
+
+function getCommuterRailVehicles(){
+	return $.grep(transitData.vehicles, (n,i)=>{ 
+		return n.relationships.route.data.id.includes("CR") 
+	});
+}
+
+function getBoardingStatus(status) {
+	if (status == "IN_TRANSIT_TO") return "Arriving";
+	else return "Boarding";
+}
+
+function checkDelays(trip) {
+	return $.grep(transitData.alerts, (n,i)=>{ 
+		if (n.attributes.informed_entity.trip) {
+			return n.attributes.informed_entity.trip.includes(trip); 
+		}
+		return "";
+	});
 }
